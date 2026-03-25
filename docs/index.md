@@ -51,6 +51,8 @@ Deep-dive references for contributors and integrators.
 | [api-schema.md](reference/api-schema.md) | ExcalidrawProps, ImperativeAPI, core types, WebSocket protocol | 2026-03-25 |
 | [dependency-map.md](reference/dependency-map.md) | All external libraries with roles, versions, and upgrade risks | 2026-03-25 |
 
+---
+
 ## Operations
 
 | File | Purpose | Updated |
