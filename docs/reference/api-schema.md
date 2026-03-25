@@ -148,14 +148,16 @@ updateLibrary(opts: {
 ### Events (all return unsubscribe function)
 
 ```typescript
-onChange(callback: (elements, appState, files) => void): () => void
-onIncrement(callback: (event: DurableIncrement | EphemeralIncrement) => void): () => void
-onPointerDown(callback: (activeTool, pointerDownState: PointerDownState, event: React.PointerEvent<HTMLElement>) => void): () => void
-onPointerUp(callback: (activeTool, pointerDownState: PointerDownState, event: PointerEvent) => void): () => void
-onScrollChange(callback: (scrollX, scrollY, zoom) => void): () => void
-onUserFollow(callback: (payload: OnUserFollowedPayload) => void): () => void
-onStateChange(callback: (appState) => void): () => void
-onEvent(callback: (event) => void): () => void
+onChange(callback: (elements: readonly ExcalidrawElement[], appState: AppState, files: BinaryFiles) => void): UnsubscribeCallback
+onIncrement(callback: (event: DurableIncrement | EphemeralIncrement) => void): UnsubscribeCallback
+onPointerDown(callback: (activeTool: AppState["activeTool"], pointerDownState: PointerDownState, event: React.PointerEvent<HTMLElement>) => void): UnsubscribeCallback
+onPointerUp(callback: (activeTool: AppState["activeTool"], pointerDownState: PointerDownState, event: PointerEvent) => void): UnsubscribeCallback
+onScrollChange(callback: (scrollX: number, scrollY: number, zoom: Zoom) => void): UnsubscribeCallback
+onUserFollow(callback: (payload: OnUserFollowedPayload) => void): UnsubscribeCallback
+// onStateChange uses the OnStateChange overloaded type — subscribe by key, key[], or selector fn
+onStateChange: OnStateChange
+// onEvent subscribes to lifecycle events (editor:mount, editor:initialize, editor:unmount)
+onEvent: AppEventBus<ExcalidrawImperativeAPIEventMap>["on"]
 ```
 
 ### Actions
