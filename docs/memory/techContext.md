@@ -139,7 +139,7 @@ graph LR
 
 ## Browser Storage Strategy
 
-```
+```text
 Elements ─────► localStorage (excalidraw)
 Libraries ────► IndexedDB
 Files ────────► Firebase Storage (with local cache)
