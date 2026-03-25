@@ -83,19 +83,22 @@ Obtained via `onExcalidrawAPI` prop callback or `useExcalidrawAPI()` hook.
 
 ```typescript
 // Replace or merge scene elements and/or appState
-updateScene(sceneData: {
+updateScene<K extends keyof AppState>(sceneData: {
   elements?: readonly ExcalidrawElement[]
-  appState?: Partial<AppState>
-  files?: BinaryFiles
+  appState?: Pick<AppState, K> | null
   collaborators?: Map<string, Collaborator>
   captureUpdate?: CaptureUpdateAction
 }): void
 
-// Apply incremental deltas (for CRDT-style sync)
-applyDeltas(deltas: { elements?: ElementsDelta, appState?: AppStateDelta }): void
+// Apply an array of store deltas; returns updated elements map, appState, and a dirty flag
+applyDeltas(deltas: StoreDelta[], options?: ApplyToOptions): [SceneElementsMap, AppState, boolean]
 
-// Mutate a single element in place
-mutateElement(element: ExcalidrawElement, updates: Partial<ExcalidrawElement>): void
+// Mutate a single element in place (informMutation=true triggers re-render)
+mutateElement<T extends ExcalidrawElement>(
+  element: T,
+  updates: Partial<T>,
+  informMutation?: boolean
+): T
 
 // Reset canvas to empty state
 resetScene(opts?: { resetLoadingState?: boolean }): void
