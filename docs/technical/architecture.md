@@ -3,7 +3,7 @@
 > Last updated: 2026-03-25
 > Cross-reference: [techContext.md](../memory/techContext.md) for stack versions, [systemPatterns.md](../memory/systemPatterns.md) for design patterns.
 
-## High-Level Overview
+## High-Level Architecture
 
 Excalidraw is a **monorepo** composed of five publishable packages and a standalone web application. All packages share one dependency lock file managed by Yarn Workspaces.
 
@@ -29,6 +29,10 @@ graph TD
     Elem --> Math
     Common --> Math
 ```
+
+## Package Dependencies
+
+Each package exports from a single `index.ts`. Dependency direction is strictly top-down — lower packages never import from higher ones.
 
 ## Layer Breakdown
 
@@ -97,7 +101,9 @@ graph TD
     LayerUI --> CommandPalette["<CommandPalette />"]
 ```
 
-## State Architecture
+## State Management
+
+Three state layers:
 
 ```mermaid
 graph LR
@@ -114,11 +120,21 @@ graph LR
         Files["BinaryFiles"]
     end
 
+    subgraph "ActionManager"
+        AM["dispatch(action)\n→ ActionResult\n→ setState"]
+    end
+
     Collab -->|reads/writes| CollabAPI
     App -->|reads| IsCollab
     ExcalidrawAPI -->|exposes| AppState
     ExcalidrawAPI -->|exposes| Elements
+    AM -->|produces| AppState
+    AM -->|produces| Elements
 ```
+
+- **AppState** — 272-field object covering active tool, zoom, scroll offset, open dialogs, theme, and all UI flags
+- **Elements** — immutable array of `ExcalidrawElement` objects; mutations go through `mutateElement()` to preserve referential equality checks
+- **ActionManager** — receives dispatched actions, calls `action.perform()`, receives `ActionResult`, and applies the resulting state diff
 
 ## Data Flow
 
@@ -194,13 +210,17 @@ sequenceDiagram
 All 46 canvas operations are defined as `Action` objects:
 
 ```typescript
+// packages/excalidraw/actions/types.ts
 interface Action {
-  name: string
-  label?: string
-  perform: (elements, appState, value, app) => ActionResult
-  keyTest?: (event) => boolean
-  contextItemLabel?: string
+  name: ActionName
+  label: string | ((elements, appState, app) => string)
+  perform: (elements, appState, value, app) => ActionResult | Promise<ActionResult>
+  trackEvent: false | { category: string; action?: string }
+  keyTest?: (event, appState, elements, app) => boolean
+  predicate?: (elements, appState, appProps, app) => boolean
+  checked?: (appState) => boolean
   PanelComponent?: React.FC   // renders in properties panel
+  viewMode?: boolean          // if true, action works in read-only mode
 }
 ```
 

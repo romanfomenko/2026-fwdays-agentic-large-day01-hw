@@ -108,6 +108,19 @@ graph LR
 | `VITE_APP_AI_BACKEND` | `http://localhost:3016` | `https://oss-ai.excalidraw.com` |
 | Dev port | 3001 | — |
 
+## Core Commands
+
+| Command | Purpose |
+|---------|---------|
+| `yarn start` | Dev server at `http://localhost:3001` |
+| `yarn build:app` | Production build → `excalidraw-app/build/` |
+| `yarn build:packages` | Build all publishable packages |
+| `yarn test:app` | Run Vitest unit tests |
+| `yarn test:coverage` | Generate coverage report |
+| `yarn test:all` | ESLint + Prettier + Vitest |
+| `yarn fix:code` | Auto-fix ESLint issues |
+| `yarn fix:other` | Auto-format with Prettier |
+
 ## Local Storage Keys
 
 | Key | Content |
@@ -117,6 +130,8 @@ graph LR
 | `excalidraw-collab` | Collaboration settings |
 | `excalidraw-theme` | User theme preference |
 | `excalidraw-debug` | Debug overlay settings |
+| `version-dataState` | Version tracking for data state |
+| `version-files` | Version tracking for files |
 
 ## Browser Storage Strategy
 
