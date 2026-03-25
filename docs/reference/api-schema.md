@@ -14,7 +14,7 @@ interface ExcalidrawProps {
     | MaybePromise<ExcalidrawInitialDataState | null>
 
   // Called every time elements, appState, or files change.
-  onChange?: (elements: readonly ExcalidrawElement[], appState: AppState, files: BinaryFiles) => void
+  onChange?: (elements: readonly OrderedExcalidrawElement[], appState: AppState, files: BinaryFiles) => void
 
   // Called for durable (history-creating) or ephemeral incremental changes.
   onIncrement?: (event: DurableIncrement | EphemeralIncrement) => void
