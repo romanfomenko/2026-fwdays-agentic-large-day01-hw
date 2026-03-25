@@ -32,8 +32,6 @@ Deep-dive references for contributors and integrators.
 | [dev-setup.md](technical/dev-setup.md) | Step-by-step local development setup and IDE configuration | 2026-03-25 |
 | [infrastructure.md](technical/infrastructure.md) | Docker, CI/CD, Vercel, Firebase, PWA caching | 2026-03-25 |
 
----
-
 ## Product Documentation
 
 | File | Purpose | Updated |
@@ -42,8 +40,6 @@ Deep-dive references for contributors and integrators.
 | [domain-glossary.md](product/domain-glossary.md) | All domain terms found in source code, by area | 2026-03-25 |
 | [feature-catalog.md](product/feature-catalog.md) | Complete catalog of implemented features with source refs | 2026-03-25 |
 
----
-
 ## Reference
 
 | File | Purpose | Updated |
@@ -51,15 +47,11 @@ Deep-dive references for contributors and integrators.
 | [api-schema.md](reference/api-schema.md) | ExcalidrawProps, ImperativeAPI, core types, WebSocket protocol | 2026-03-25 |
 | [dependency-map.md](reference/dependency-map.md) | All external libraries with roles, versions, and upgrade risks | 2026-03-25 |
 
----
-
 ## Operations
 
 | File | Purpose | Updated |
 |------|---------|---------|
 | [rollback-guide.md](operations/rollback-guide.md) | Rollback procedures for Vercel/Docker/NPM, incident playbook | 2026-03-25 |
-
----
 
 ## Keeping Docs Current
 

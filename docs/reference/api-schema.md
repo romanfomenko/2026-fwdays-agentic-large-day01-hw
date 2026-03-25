@@ -9,7 +9,9 @@
 ```typescript
 interface ExcalidrawProps {
   // Initial scene data (elements + appState + files). Can be async.
-  initialData?: ExcalidrawInitialDataState | null | Promise<ExcalidrawInitialDataState | null>
+  initialData?:
+    | (() => MaybePromise<ExcalidrawInitialDataState | null>)
+    | MaybePromise<ExcalidrawInitialDataState | null>
 
   // Called every time elements, appState, or files change.
   onChange?: (elements: readonly ExcalidrawElement[], appState: AppState, files: BinaryFiles) => void
@@ -18,7 +20,7 @@ interface ExcalidrawProps {
   onIncrement?: (event: DurableIncrement | EphemeralIncrement) => void
 
   // Called with the imperative API once the component mounts.
-  onExcalidrawAPI?: (api: ExcalidrawImperativeAPI) => void
+  onExcalidrawAPI?: (api: ExcalidrawImperativeAPI | null) => void
 
   // Lifecycle
   onMount?: (payload: ExcalidrawMountPayload) => void
@@ -31,8 +33,8 @@ interface ExcalidrawProps {
   onUserFollow?: (payload: OnUserFollowedPayload) => void
 
   // Pointer events
-  onPointerDown?: (activeTool: ActiveTool, pointerDownState: PointerDownState, event: React.PointerEvent<HTMLElement>) => void
-  onPointerUp?: (activeTool: ActiveTool, pointerDownState: PointerDownState, event: PointerEvent) => void
+  onPointerDown?: (activeTool: AppState["activeTool"], pointerDownState: PointerDownState) => void
+  onPointerUp?: (activeTool: AppState["activeTool"], pointerDownState: PointerDownState) => void
   onScrollChange?: (scrollX: number, scrollY: number, zoom: Zoom) => void
 
   // Custom UI injection (use UIAppState, a read-only subset of AppState)
@@ -54,8 +56,16 @@ interface ExcalidrawProps {
 
   // Element lifecycle
   generateIdForFile?: (file: File) => string | Promise<string>
-  validateEmbeddable?: string[] | boolean | RegExp | ((link: string) => boolean | undefined)
-  renderEmbeddable?: (element, appState) => JSX.Element | null
+  validateEmbeddable?:
+    | boolean
+    | string[]
+    | RegExp
+    | RegExp[]
+    | ((link: string) => boolean | undefined)
+  renderEmbeddable?: (
+    element: NonDeleted<ExcalidrawEmbeddableElement>,
+    appState: AppState,
+  ) => JSX.Element | null
 }
 ```
 
