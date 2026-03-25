@@ -1,5 +1,6 @@
 # Architecture
 
+> Last updated: 2026-03-25
 > Cross-reference: [techContext.md](../memory/techContext.md) for stack versions, [systemPatterns.md](../memory/systemPatterns.md) for design patterns.
 
 ## High-Level Overview
@@ -117,6 +118,75 @@ graph LR
     App -->|reads| IsCollab
     ExcalidrawAPI -->|exposes| AppState
     ExcalidrawAPI -->|exposes| Elements
+```
+
+## Data Flow
+
+### 1. User Interaction → State Update → Re-render
+
+```mermaid
+sequenceDiagram
+    participant User
+    participant Canvas as InteractiveCanvas
+    participant ActionManager
+    participant AppState as AppState / Elements
+    participant Renderer as StaticCanvas
+
+    User->>Canvas: pointerdown / keypress
+    Canvas->>ActionManager: dispatch action (name + payload)
+    ActionManager->>ActionManager: action.perform(elements, appState, value)
+    ActionManager-->>AppState: ActionResult { elements, appState }
+    AppState->>Renderer: scene change triggers re-render
+    Renderer->>Renderer: renderStaticScene() — pure paint
+```
+
+### 2. State Update → Persistence
+
+```mermaid
+sequenceDiagram
+    participant AppState
+    participant LocalData as LocalData (localStorage)
+    participant IDB as IndexedDB
+    participant Firebase
+
+    AppState->>LocalData: saveElements() — debounced
+    AppState->>LocalData: saveAppState() — debounced
+    AppState->>IDB: saveLibrary() — on library change
+    AppState->>Firebase: FileManager.saveFiles() — images/files only
+```
+
+### 3. Collaboration Sync Flow
+
+```mermaid
+sequenceDiagram
+    participant User1 as User 1 (local)
+    participant Collab as Collab.tsx
+    participant WS as Socket.io Server
+    participant User2 as User 2 (remote)
+
+    User1->>Collab: element change (via onChange callback)
+    Collab->>Collab: serialize + pako.deflate + AES-GCM encrypt
+    Collab->>WS: socket.emit(SCENE_UPDATE, encryptedPayload)
+    WS->>User2: broadcast to room
+    User2->>User2: decrypt + inflate + reconcileElements()
+    User2->>User2: updateScene() → re-render
+```
+
+### 4. Export Flow
+
+```mermaid
+sequenceDiagram
+    participant User
+    participant ExportDialog
+    participant Renderer as exportToCanvas()
+    participant Output
+
+    User->>ExportDialog: choose format (PNG/SVG/JSON)
+    ExportDialog->>Renderer: exportToCanvas(elements, appState)
+    Renderer->>Renderer: renderStaticScene() on offscreen canvas
+    Renderer-->>ExportDialog: HTMLCanvasElement
+    ExportDialog->>Output: toBlob() → PNG download
+    Note over Output: PNG also embeds full JSON\nin tEXt chunk for re-import
 ```
 
 ## Action System

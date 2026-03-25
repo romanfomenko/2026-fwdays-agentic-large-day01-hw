@@ -47,6 +47,8 @@ yarn clean-install           # Fresh dependency install
 └── docs/                # Project documentation (Memory Bank)
 ```
 
+> Full documentation index: [docs/index.md](docs/index.md)
+
 ## Memory Bank (docs/memory/)
 
 | File | Purpose |
